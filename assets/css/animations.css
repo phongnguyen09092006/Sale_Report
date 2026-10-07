@@ -1,0 +1,244 @@
+/* ═══════════════════════════════════════════════ TAB & VIEW MOTION ═══ */
+.view-section { display: none; opacity: 0; }
+.view-section.active {
+  display: flex;
+  flex-direction: column;
+  animation: viewSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes viewSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered card entrance */
+.stagger-1 { animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) 30ms backwards; }
+.stagger-2 { animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) 80ms backwards; }
+.stagger-3 { animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) 130ms backwards; }
+.stagger-4 { animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) 180ms backwards; }
+
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════ NAVIGATION MOTION ═══ */
+.tab-active { color: #004ac6 !important; font-weight: 700; }
+.tab-active span.material-symbols-outlined {
+  font-variation-settings: 'FILL' 1;
+  animation: navIconPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes navIconPop {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+.nav-tab {
+  position: relative;
+  transition: color 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+}
+.nav-tab:active {
+  transform: scale(0.90);
+}
+
+/* ═══════════════════════════════════════════════ BUTTONS & MICRO-INTERACTIONS ═══ */
+.btn-press {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease;
+  touch-action: manipulation;
+  will-change: transform;
+}
+.btn-press:active {
+  transform: scale(0.965);
+}
+
+/* Shimmer effect for CTA button */
+.shimmer-cta {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-cta::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  animation: shimmerGlance 3.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+@keyframes shimmerGlance {
+  0% { transform: translateX(-150%) rotate(25deg); }
+  35%, 100% { transform: translateX(450%) rotate(25deg); }
+}
+
+/* Ripple Wave Effect */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-wave {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleAnimation 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  background-color: rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+.btn-ripple-dark .ripple-wave {
+  background-color: rgba(0, 74, 198, 0.18);
+}
+@keyframes rippleAnimation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════ PROGRESS BAR SHIMMER ═══ */
+.progress-bar-shimmer {
+  position: relative;
+  overflow: hidden;
+  transition: width 0.75s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.progress-bar-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: progressSweep 2.4s infinite linear;
+  pointer-events: none;
+}
+@keyframes progressSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ═══════════════════════════════════════════════ RESULT CARD REVEAL ═══ */
+.result-reveal-pop {
+  animation: resultCardPop 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes resultCardPop {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 74, 198, 0);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(0, 74, 198, 0.18);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 16px -2px rgba(0, 74, 198, 0.08);
+  }
+}
+
+/* ═══════════════════════════════════════════════ NUMBER BUMP & BADGES ═══ */
+.number-bump {
+  animation: bumpScale 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+@keyframes bumpScale {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════ HISTORY WATERFALL ═══ */
+.history-card-in {
+  animation: historySlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.history-card-in:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px -4px rgba(0, 74, 198, 0.1);
+  border-color: rgba(0, 74, 198, 0.3);
+}
+.history-card-in:active {
+  transform: scale(0.985);
+}
+@keyframes historySlide {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ═══════════════════════════════════════════════ BOTTOM SHEET & MODAL ═══ */
+.sheet-open {
+  transform: translateY(0) !important;
+}
+.modal-bg-open {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+#detailModal {
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#detailModalSheet {
+  transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════ TOAST BOUNCE ═══ */
+#toast {
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform, opacity;
+}
+
+/* ═══════════════════════════════════════════════ BASE LAYER ═══ */
+@layer base {
+  html, body { width: 100vw; margin: 0; padding: 0; }
+  body {
+    overscroll-behavior: none;
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem); }
+  .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+  ::-webkit-scrollbar { display: none; }
+}
+
+/* ═══════════════════════════════════════════════ ACCESSIBILITY ═══ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

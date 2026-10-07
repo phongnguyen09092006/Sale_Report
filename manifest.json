@@ -1,0 +1,21 @@
+{
+  "name": "Báo Cáo Bán Hàng - Hùng Dũng",
+  "short_name": "Báo Cáo BH",
+  "description": "Ứng dụng báo cáo bán hàng di động dành cho nhân viên Hùng Dũng",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf8ff",
+  "theme_color": "#004ac6",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23004ac6'/%3E%3Ctext x='96' y='125' font-size='90' text-anchor='middle' fill='white'%3E📊%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23004ac6'/%3E%3Ctext x='256' y='330' font-size='240' text-anchor='middle' fill='white'%3E📊%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
