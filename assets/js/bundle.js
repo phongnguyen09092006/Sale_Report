@@ -81,7 +81,7 @@
         item.orders,
         item.cumulativeOrders,
         fmt(item.revenue),
-        item.deduction || 0,
+        (item.droppedRevenue || 0) + (item.deduction || 0),
         fmt(item.cumulative),
         item.count3 || 0,
         item.count5 || 0,
@@ -263,7 +263,7 @@
     setEl("modalRevenue", `${fmt(item.revenue)}k`);
     setEl("modalCumulative", `${fmt(item.cumulative)}k`);
     setEl("modalOrders", `${item.orders} \u0111\u01A1n`);
-    setEl("modalDroppedOrders", `${item.droppedOrders || 0} \u0111\u01A1n`);
+    setEl("modalDroppedOrders", item.droppedRevenue > 0 ? `${item.droppedOrders || 0} \u0111\u01A1n (-${fmt(item.droppedRevenue)}k)` : `${item.droppedOrders || 0} \u0111\u01A1n`);
     setEl("modalDeduction", `${item.deduction || 0}k`);
     setEl("modalDisplay", `${item.count3 || 0} / ${item.count5 || 0}`);
     setEl("modalReportText", item.reportText || "(Kh\xF4ng c\xF3 v\u0103n b\u1EA3n)");
@@ -633,24 +633,21 @@
       }
     }
     const dayOrders = parseOrdersSummary(text);
-    let totalRevenue = dayOrders.totalRevenue;
-    let count3 = dayOrders.count3;
-    let count5 = dayOrders.count5;
+    const totalRevenue = dayOrders.totalRevenue;
+    const count3 = dayOrders.count3;
+    const count5 = dayOrders.count5;
     const validOrderCount = dayOrders.validOrderCount;
     const droppedText = document.getElementById("droppedOrdersText")?.value || "";
     const droppedOrders = parseOrdersSummary(droppedText);
     const droppedCount = droppedOrders.validOrderCount;
     const droppedRevenue = droppedOrders.totalRevenue;
-    const netDailyOrders = Math.max(0, validOrderCount - droppedCount);
-    if (droppedOrders.count3 > 0) count3 = Math.max(0, count3 - droppedOrders.count3);
-    if (droppedOrders.count5 > 0) count5 = Math.max(0, count5 - droppedOrders.count5);
-    const manualDeduction = Math.round(parseFloat(document.getElementById("deduction")?.value) || 0);
-    const totalDeduction = Math.round(droppedRevenue + manualDeduction);
-    const netRevenue = Math.round(totalRevenue - totalDeduction);
-    const prevCumulative = Math.round(parseFloat(document.getElementById("cumulative")?.value) || 0);
-    const newCumulative = Math.round(prevCumulative + netRevenue);
+    const dailyOrders = validOrderCount;
+    const dailyRevenue = Math.round(totalRevenue);
     const prevOrders = parseInt(document.getElementById("cumulativeOrders")?.value) || 0;
-    const newOrders = prevOrders + netDailyOrders;
+    const newOrders = Math.max(0, prevOrders - droppedCount + dailyOrders);
+    const manualDeduction = Math.round(parseFloat(document.getElementById("deduction")?.value) || 0);
+    const prevCumulative = Math.round(parseFloat(document.getElementById("cumulative")?.value) || 0);
+    const newCumulative = Math.max(0, Math.round(prevCumulative + dailyRevenue - droppedRevenue - manualDeduction));
     const workDay = parseInt(document.getElementById("workDay")?.value) || 1;
     const kpiStandardDays = parseInt(document.getElementById("kpiStandardDays")?.value) || DEFAULT_KPI.kpiStandardDays;
     const kpiMonthRevenue = Math.round(parseFloat(document.getElementById("kpiMonthRevenue")?.value) || DEFAULT_KPI.kpiMonthRevenue);
@@ -661,11 +658,11 @@
       dateStr,
       workDay,
       kpiStandardDays,
-      netRevenue,
+      netRevenue: dailyRevenue,
       newCumulative,
       kpiMonthRevenue,
       kpiDayRevenue,
-      validOrderCount: netDailyOrders,
+      validOrderCount: dailyOrders,
       newOrders,
       kpiTotalOrders,
       count3,
@@ -687,11 +684,11 @@
       date: dateStr,
       employeeName: staffName,
       workDay,
-      orders: netDailyOrders,
-      rawOrderCount: validOrderCount,
+      orders: dailyOrders,
+      rawOrderCount: dailyOrders,
       droppedOrders: droppedCount,
-      revenue: Math.round(netRevenue),
-      deduction: totalDeduction,
+      revenue: Math.round(dailyRevenue),
+      deduction: manualDeduction,
       droppedRevenue: Math.round(droppedRevenue),
       cumulative: Math.round(newCumulative),
       cumulativeOrders: newOrders,
