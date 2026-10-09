@@ -249,9 +249,9 @@ function calculateReport(callbacks) {
   }
 
   const dayOrders = parseOrdersSummary(text);
-  let totalRevenue = dayOrders.totalRevenue;
-  let count3 = dayOrders.count3;
-  let count5 = dayOrders.count5;
+  const totalRevenue = dayOrders.totalRevenue;
+  const count3 = dayOrders.count3;
+  const count5 = dayOrders.count5;
   const validOrderCount = dayOrders.validOrderCount;
 
   // Phân tích đơn rớt / huỷ
@@ -260,27 +260,18 @@ function calculateReport(callbacks) {
   const droppedCount = droppedOrders.validOrderCount;
   const droppedRevenue = droppedOrders.totalRevenue;
 
-  // Trừ đơn rớt vào số đơn ngày
-  const netDailyOrders = Math.max(0, validOrderCount - droppedCount);
+  // 1. Số đơn ngày và Doanh số ngày: KHÔNG được phép trừ đơn rớt hay tiền thu hồi
+  const dailyOrders = validOrderCount;
+  const dailyRevenue = Math.round(totalRevenue);
 
-  // Trừ trưng bày nếu đơn rớt có trưng bày
-  if (droppedOrders.count3 > 0) count3 = Math.max(0, count3 - droppedOrders.count3);
-  if (droppedOrders.count5 > 0) count5 = Math.max(0, count5 - droppedOrders.count5);
-
-  // Tiền trừ = tiền đơn rớt + tiền trừ thủ công (nếu có)
-  const manualDeduction = Math.round(parseFloat(document.getElementById('deduction')?.value) || 0);
-  const totalDeduction = Math.round(droppedRevenue + manualDeduction);
-
-  // Trừ vào doanh số ngày
-  const netRevenue = Math.round(totalRevenue - totalDeduction);
-
-  // Trừ vào doanh số lũy tiến
-  const prevCumulative = Math.round(parseFloat(document.getElementById('cumulative')?.value) || 0);
-  const newCumulative = Math.round(prevCumulative + netRevenue);
-
-  // Trừ vào số đơn lũy tiến
+  // 2. Đơn rớt chỉ được phép trừ vào số đơn cũ và doanh số luỹ kế
   const prevOrders = parseInt(document.getElementById('cumulativeOrders')?.value) || 0;
-  const newOrders = prevOrders + netDailyOrders;
+  const newOrders = Math.max(0, prevOrders - droppedCount + dailyOrders);
+
+  // 3. Tiền bị thu hồi và tiền đơn rớt: CHỈ được phép trừ vào doanh số luỹ kế
+  const manualDeduction = Math.round(parseFloat(document.getElementById('deduction')?.value) || 0);
+  const prevCumulative = Math.round(parseFloat(document.getElementById('cumulative')?.value) || 0);
+  const newCumulative = Math.max(0, Math.round(prevCumulative + dailyRevenue - droppedRevenue - manualDeduction));
 
   const workDay = parseInt(document.getElementById('workDay')?.value) || 1;
 
@@ -292,9 +283,11 @@ function calculateReport(callbacks) {
   const staffName = (document.getElementById('employeeName')?.value || '').trim() || DEFAULT_KPI.employeeName;
 
   const reportText = generateReportText({
-    dateStr, workDay, kpiStandardDays, netRevenue, newCumulative,
+    dateStr, workDay, kpiStandardDays,
+    netRevenue: dailyRevenue,
+    newCumulative,
     kpiMonthRevenue, kpiDayRevenue,
-    validOrderCount: netDailyOrders,
+    validOrderCount: dailyOrders,
     newOrders,
     kpiTotalOrders,
     count3, count5, staffName
@@ -319,11 +312,11 @@ function calculateReport(callbacks) {
     date: dateStr,
     employeeName: staffName,
     workDay,
-    orders: netDailyOrders,
-    rawOrderCount: validOrderCount,
+    orders: dailyOrders,
+    rawOrderCount: dailyOrders,
     droppedOrders: droppedCount,
-    revenue: Math.round(netRevenue),
-    deduction: totalDeduction,
+    revenue: Math.round(dailyRevenue),
+    deduction: manualDeduction,
     droppedRevenue: Math.round(droppedRevenue),
     cumulative: Math.round(newCumulative),
     cumulativeOrders: newOrders,
