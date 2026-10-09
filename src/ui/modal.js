@@ -25,7 +25,7 @@ export function openDetailModal(item) {
   setEl('modalRevenue', `${fmt(item.revenue)}k`);
   setEl('modalCumulative', `${fmt(item.cumulative)}k`);
   setEl('modalOrders', `${item.orders} đơn`);
-  setEl('modalDroppedOrders', `${item.droppedOrders || 0} đơn`);
+  setEl('modalDroppedOrders', item.droppedRevenue > 0 ? `${item.droppedOrders || 0} đơn (-${fmt(item.droppedRevenue)}k)` : `${item.droppedOrders || 0} đơn`);
   setEl('modalDeduction', `${item.deduction || 0}k`);
   setEl('modalDisplay', `${item.count3 || 0} / ${item.count5 || 0}`);
   setEl('modalReportText', item.reportText || '(Không có văn bản)');
