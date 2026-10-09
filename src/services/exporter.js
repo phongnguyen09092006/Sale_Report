@@ -33,7 +33,7 @@ export function exportCSV(historyData) {
       item.orders,
       item.cumulativeOrders,
       fmt(item.revenue),
-      item.deduction || 0,
+      (item.droppedRevenue || 0) + (item.deduction || 0),
       fmt(item.cumulative),
       item.count3 || 0,
       item.count5 || 0,
