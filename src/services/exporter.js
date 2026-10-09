@@ -57,3 +57,4 @@ export function exportCSV(historyData) {
     return false;
   }
 }
+
